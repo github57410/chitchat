@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+
+{% block room %}
+    <div class="col-xs-2 col-sm-2 col-md-2">
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <div class="page-header">
+                <h3 class="text-center">
+                    <img src="{{ data.portrait }}" class="img-circle" style="width: 40px; height: 40px;">
+                    <a href="{% url 'userprofile' username %}" style="color: #0f0f0f">{{ username }}</a>
+                </h3>
+            </div>
+            <div style="background-color: #bfbcbc;" class="text-center">
+                <ul class="nav nav-pills nav-stacked">
+                    <li class="active"><a href="#">聊天系统<span class="sr-only">(current)</span></a></li>
+                    <li><a href="{% url 'back2chat' username %}" style="color: #333">聊天室</a></li>
+                    <li>
+                        <form method="POST" action="/logout/">
+                            <input type="submit" class="btn navbar-btn" style="background-color: #bfbcbc;" value="退出登录"/>
+                            <input type="hidden" name="username" value={{ username }}>
+                            {% csrf_token %}
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xs-7 col-md-7 col-sm-7" style="margin-top: 15px; padding-right: 0px">
+        <div id="room" style="height: 500px">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    好友信息
+                </div>
+                <div class="panel-body" style="height: 500px; padding: 0px; ">
+                    <div class="col-md-8 col-md-offset-2" style="margin-top: 100px">
+                        <form id="form" class="form-horizontal">
+                            <div class="form-group">
+                                <div class="text-center"><img src="{{ fri_obj.portrait }}" class="img-circle img-thumbnail" style="margin: 5px;width: 100px;height: 100px"></div>
+
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-2 control-label"></label>
+                                <div class="input-group col-sm-8">
+                                    <span class="input-group-addon"><i class="fa fa-user-plus fa-fw"></i>昵称</span>
+                                    <label class="form-control">{{ fri_obj.username }}</label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="inputEmail3" class="col-sm-2 control-label"></label>
+                                <div class="input-group col-sm-8">
+                                    <span class="input-group-addon"><i class="fa fa-envelope-o fa-fw"></i>邮箱</span>
+                                    <label class="form-control">{{ fri_obj.email }}</label>
+                                </div>
+                            </div>
+                            {% csrf_token %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-3">
+        <div class="panel panel-default text-center" style="margin-top: 15px">
+           <div class="panel-heading" role="alert" >在线</div>
+           <ul class="list-group">
+              {% for user in online %}
+                    {% if user.username == username %}
+                    {% else %}
+                        <li class="list-group-item">
+                            <div>
+                                <a href="{% url 'friendprofile' username user.username %}" class="list-group-item">
+                                    <img src="{{ user.portrait }}" class="img-circle img-thumbnail" style="margin: 2px;width: 30px;height: 30px">
+                                    {{ user.username }}
+                                </a>
+                            </div>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+           </ul>
+        </div>
+        <div class="panel panel-default text-center">
+           <div class="panel-heading" role="alert">离线</div>
+           <ul class="list-group" style="margin-top: 15px">
+                {% for user in offline %}
+                    {% if user.username == username %}
+                    {% else %}
+                        <li class="list-group-item">
+                            <a href="{% url 'friendprofile' username user.username %}" class="list-group-item">
+                                <img src="{{ user.portrait }}" class="img-circle img-thumbnail" style="margin: 5px;width: 40px;height: 40px">
+                                {{ user.username }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endblock room %}
